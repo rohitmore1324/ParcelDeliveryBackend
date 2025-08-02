@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 public class FirebaseTokenFilter extends OncePerRequestFilter {
@@ -44,17 +45,25 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
                 request.setAttribute("uid", uid);
                 request.setAttribute("email", email);
 
-                // Optional: attach role if found
-                userService.getUserByUid(uid)
-                        .ifPresent(user -> request.setAttribute("role", user.getRole()));
+                // ✅ Use Firebase custom claims for role (more secure)
+                String role = "USER"; // Default role
+                if (decodedToken.getClaims() != null && decodedToken.getClaims().containsKey("role")) {
+                    role = (String) decodedToken.getClaims().get("role");
+                }
+                request.setAttribute("role", role);
 
-                // ✅ Set authentication context for Spring Security
+                // ✅ Set authentication context with proper authorities
+                List<String> authorities = Collections.singletonList("ROLE_" + role);
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(uid, null, Collections.emptyList());
+                        new UsernamePasswordAuthenticationToken(uid, null, 
+                            authorities.stream()
+                                .map(auth -> new org.springframework.security.core.authority.SimpleGrantedAuthority(auth))
+                                .toList());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (FirebaseAuthException e) {
+                logger.error("Firebase token verification failed", e);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid Firebase ID token.");
                 return;

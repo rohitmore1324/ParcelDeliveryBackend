@@ -8,5 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface TripRepository extends MongoRepository<Trip, String> {
-    List<Trip> findByFromCityAndToCityAndTravelDateAfter(String fromCity, String toCity, LocalDate travelDate);
+    List<Trip> findByFromCityAndToCityAndTravelDateGreaterThanEqual(String fromCity, String toCity, LocalDate travelDate);
+    List<Trip> findByTravelerId(String travelerId);
+    boolean existsByTravelerIdAndFromCityAndToCityAndTravelDate(String travelerId, String fromCity, String toCity, LocalDate travelDate);
 }
