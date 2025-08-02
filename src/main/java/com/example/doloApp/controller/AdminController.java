@@ -1,4 +1,4 @@
-//package com.example.doloApp.controller;
+
 //
 //import com.example.doloApp.model.User;
 //import com.example.doloApp.model.Trip;
@@ -191,7 +191,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//admin
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
