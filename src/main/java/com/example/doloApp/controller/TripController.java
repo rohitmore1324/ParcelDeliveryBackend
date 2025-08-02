@@ -36,5 +36,14 @@ public class TripController {
         List<Trip> result = tripService.searchTrips(fromCity, toCity, travelDate.minusDays(1));
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/public/trips/search")
+    public ResponseEntity<List<Trip>> publicSearchTrips(
+            @RequestParam String fromCity,
+            @RequestParam String toCity,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate travelDate) {
+        List<Trip> result = tripService.searchTrips(fromCity, toCity, travelDate.minusDays(1));
+        return ResponseEntity.ok(result);
+    }
 }
 

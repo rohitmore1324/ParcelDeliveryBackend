@@ -32,4 +32,12 @@ public class PackageController {
         List<Package> result = packageService.findMatchingPackages(fromCity, toCity);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/public/packages/match")
+    public ResponseEntity<List<Package>> publicMatchPackages(
+            @RequestParam String fromCity,
+            @RequestParam String toCity) {
+        List<Package> result = packageService.findMatchingPackages(fromCity, toCity);
+        return ResponseEntity.ok(result);
+    }
 }
